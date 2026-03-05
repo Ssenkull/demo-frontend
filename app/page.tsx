@@ -1,66 +1,86 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+interface Game {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+  tags: string[];
+  rating: number;
+  createdAt: string;
+}
 
-export default function Home() {
+async function getGames(): Promise<Game[]> {
+  try {
+    const res = await fetch("http://localhost:3001/games", {
+      cache: "no-store",
+    });
+    return res.json();
+  } catch {
+    return [];
+  }
+}
+
+export default async function Home() {
+  const games = await getGames();
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
+    <main
+      style={{
+        fontFamily: "sans-serif",
+        maxWidth: "800px",
+        margin: "0 auto",
+        padding: "2rem",
+      }}
+    >
+      <h1>🎮 Game Store</h1>
+      <p style={{ color: "#888" }}>Data from NestJS → PostgreSQL + MongoDB</p>
+
+      {games.length === 0 ? (
+        <p>No games yet. Add some via the admin panel!</p>
+      ) : (
+        <div style={{ display: "grid", gap: "1rem", marginTop: "1.5rem" }}>
+          {games.map((game) => (
+            <div
+              key={game.id}
+              style={{
+                border: "1px solid #333",
+                borderRadius: "8px",
+                padding: "1rem",
+                background: "#1a1a1a",
+                color: "#fff",
+              }}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              <h2 style={{ margin: "0 0 0.5rem" }}>{game.title}</h2>
+              <p style={{ margin: "0 0 0.5rem", color: "#aaa" }}>
+                {game.description}
+              </p>
+              <div
+                style={{ display: "flex", gap: "1rem", alignItems: "center" }}
+              >
+                <span style={{ color: "#4ade80", fontWeight: "bold" }}>
+                  ${game.price}
+                </span>
+                <span style={{ color: "#888" }}>⭐ {game.rating}</span>
+                <div style={{ display: "flex", gap: "0.5rem" }}>
+                  {game.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      style={{
+                        background: "#7c3aed",
+                        color: "#fff",
+                        padding: "2px 8px",
+                        borderRadius: "4px",
+                        fontSize: "0.75rem",
+                      }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      )}
+    </main>
   );
 }
