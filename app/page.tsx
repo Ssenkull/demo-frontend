@@ -10,7 +10,7 @@ interface Game {
 
 async function getGames(): Promise<Game[]> {
   try {
-    const res = await fetch("http://localhost:3001/games", {
+    const res = await fetch("http://demo_backend:3001/games", {
       cache: "no-store",
     });
     return res.json();
