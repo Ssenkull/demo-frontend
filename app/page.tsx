@@ -31,7 +31,7 @@ export default async function Home() {
         padding: "2rem",
       }}
     >
-      <h1>🎮 Game Store</h1>
+      <h1>🎮 Game Store test</h1>
       <p style={{ color: "#888" }}>Data from NestJS → PostgreSQL + MongoDB</p>
 
       {games.length === 0 ? (
